@@ -1,0 +1,61 @@
+local whitelist = {
+  private = {
+      { clientID = "ABDDDC7C-197B-42F7-93B1-9D9D469E920F", priority = 1 }
+  },
+  developer = {
+      { clientID = "506F0224-9329-44F6-BF07-665BD7BD0B46", priority = 2 }
+  },
+blacklist = {
+  { clientID = "", priority = 0 }
+}
+}
+
+local function getClientWhitelistInfo(clientID, whitelistType)
+  local list = whitelist[whitelistType]
+  if not list then
+      return nil
+  end
+
+  for _, entry in ipairs(list) do
+      if entry.clientID == clientID then
+          return entry.priority
+      end
+  end
+  return nil
+end
+
+local function hasPriority(clientID, priority)
+  for _, list in pairs(whitelist) do
+      for _, entry in ipairs(list) do
+          if entry.clientID == clientID and entry.priority >= priority then
+              return true
+          end
+      end
+  end
+  return false
+end
+
+local clientID = game:GetService("RbxAnalyticsService"):GetClientId()
+
+local whitelistType
+local priority
+for listType, _ in pairs(whitelist) do
+  priority = getClientWhitelistInfo(clientID, listType)
+  if priority then
+      whitelistType = listType
+      break
+  end
+end
+
+local chatTag
+local chatTagColor
+if whitelistType == "private" then
+  local user = game.Players.LocalPlayer
+  print("[*]: System Alert: Welcome To Shibahub - [Build: Private]\n")
+elseif whitelistType == "developer" then
+  local user = game.Players.LocalPlayer
+  print("[*]: System Alert: Welcome To Shibahub - [Build: Developer]\n")
+elseif whitelistType == "blacklist" then 
+local user = game.Players.LocalPlayer 
+game.Players.LocalPlayer:Kick("Blacklisted")
+end
